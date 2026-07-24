@@ -1,1 +1,123 @@
-<!doctype html><html><head><meta charset='utf-8'><link rel='stylesheet' href='css/style.css'></head><body><h1>Mini Arcade Part 1</h1><div id='menu'></div><canvas id='game' width='640' height='480'></canvas><script src='js/main.js'></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mini Arcade - A collection of classic arcade-inspired games">
+    <title>Mini Arcade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="loading-overlay">
+            <div class="loading-content">
+                <h1>MINI ARCADE</h1>
+                <div class="loading-spinner"></div>
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Engine } from './engine/Engine.js';
+        import { MainMenuScene, LoadingScene, PauseScene, GameOverScene, SettingsScene } from './engine/Scene.js';
+
+        // Initialize engine
+        const canvas = document.getElementById('gameCanvas');
+        const engine = new Engine('gameCanvas');
+
+        // Register games (placeholder games for Phase 1.5)
+        engine.registerGame('snake', {
+            title: 'Snake',
+            description: 'Classic snake game',
+            sceneClass: null // Will be implemented in future phases
+        });
+
+        engine.registerGame('pong', {
+            title: 'Pong',
+            description: 'Classic paddle game',
+            sceneClass: null
+        });
+
+        engine.registerGame('breakout', {
+            title: 'Breakout',
+            description: 'Brick breaker game',
+            sceneClass: null
+        });
+
+        engine.registerGame('memory', {
+            title: 'Memory',
+            description: 'Card matching game',
+            sceneClass: null
+        });
+
+        engine.registerGame('tictactoe', {
+            title: 'Tic Tac Toe',
+            description: 'Classic strategy game',
+            sceneClass: null
+        });
+
+        // Create scenes
+        const loadingScene = new LoadingScene();
+        const mainMenuScene = new MainMenuScene();
+        const pauseScene = new PauseScene();
+        const gameOverScene = new GameOverScene();
+        const settingsScene = new SettingsScene();
+
+        // Register scenes
+        engine.registerScene('loading', loadingScene);
+        engine.registerScene('mainMenu', mainMenuScene);
+        engine.registerScene('pause', pauseScene);
+        engine.registerScene('gameOver', gameOverScene);
+        engine.registerScene('settings', settingsScene);
+
+        // Setup main menu
+        mainMenuScene.games = engine.getAllGames();
+        mainMenuScene.onGameSelected = (gameName) => {
+            console.log(`Game selected: ${gameName}`);
+            // Game scenes will be implemented in future phases
+        };
+
+        mainMenuScene.onSettingsSelected = () => {
+            engine.switchScene('settings');
+        };
+
+        // Setup settings
+        settingsScene.onBack = () => {
+            engine.switchScene('mainMenu');
+        };
+
+        // Initialize engine
+        async function init() {
+            await engine.init();
+            
+            // Hide loading overlay
+            document.getElementById('loading-overlay').style.display = 'none';
+            
+            // Start with main menu
+            engine.switchScene('mainMenu');
+            
+            // Start game loop
+            engine.start();
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            engine.resize();
+        });
+
+        // Initialize on load
+        window.addEventListener('load', init);
+
+        // Initialize audio on first user interaction
+        document.addEventListener('click', () => {
+            engine.audio.init();
+        }, { once: true });
+
+        document.addEventListener('keydown', () => {
+            engine.audio.init();
+        }, { once: true });
+    </script>
+</body>
+</html>
