@@ -324,6 +324,10 @@ export class BreakoutGame extends Scene {
     this.gameOver = true;
     window.save.setHighScore('breakout', this.score);
     window.save.addGamePlayed('breakout');
+    window.statistics.trackGamePlayed('breakout');
+    window.statistics.trackScore('breakout', this.score);
+    window.achievements.trackScore('breakout', this.score);
+    window.achievements.trackGamePlayed('breakout');
     window.audio.playExplosion();
   }
 

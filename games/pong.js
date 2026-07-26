@@ -219,13 +219,18 @@ export class PongGame extends Scene {
     
     if (this.playerScore > this.aiScore) {
       window.save.addWin('pong');
+      window.statistics.trackGameWon('pong');
+      window.achievements.trackWin('pong');
       window.audio.playScore();
     } else {
       window.save.addLoss('pong');
+      window.statistics.trackGameLost('pong');
       window.audio.playExplosion();
     }
     
     window.save.addGamePlayed('pong');
+    window.statistics.trackGamePlayed('pong');
+    window.achievements.trackGamePlayed('pong');
   }
 
   togglePause() {

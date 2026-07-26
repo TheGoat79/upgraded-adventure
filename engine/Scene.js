@@ -15,11 +15,17 @@ export class Scene {
 
   update(dt) {
     if (this.paused) return;
-    this.ui.forEach(element => element.update(dt));
+    const len = this.ui.length;
+    for (let i = 0; i < len; i++) {
+      this.ui[i].update(dt);
+    }
   }
 
   render(ctx) {
-    this.ui.forEach(element => element.render(ctx));
+    const len = this.ui.length;
+    for (let i = 0; i < len; i++) {
+      this.ui[i].render(ctx);
+    }
   }
 
   handleClick(x, y) {

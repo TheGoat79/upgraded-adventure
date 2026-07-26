@@ -118,16 +118,24 @@ export class TicTacToeGame extends Scene {
       if (this.gameMode === 'ai') {
         if (this.currentPlayer === 'X') {
           window.save.addWin('tictactoe');
+          window.statistics.trackGameWon('tictactoe');
+          window.achievements.trackWin('tictactoe');
         } else {
           window.save.addLoss('tictactoe');
+          window.statistics.trackGameLost('tictactoe');
         }
       }
       
       window.save.addGamePlayed('tictactoe');
+      window.statistics.trackGamePlayed('tictactoe');
+      window.achievements.trackGamePlayed('tictactoe');
     } else if (this.checkDraw()) {
       this.gameOver = true;
       this.winner = 'draw';
       window.audio.playHit();
+      window.save.addGamePlayed('tictactoe');
+      window.statistics.trackGamePlayed('tictactoe');
+      window.achievements.trackGamePlayed('tictactoe');
     } else {
       this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
     }

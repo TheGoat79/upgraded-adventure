@@ -151,7 +151,49 @@ export class ArcadeMenu extends Scene {
 
   showSettings() {
     window.audio.playSelect();
-    // Settings implementation
+    // Create a simple settings overlay
+    this.createSettingsOverlay();
+  }
+
+  createSettingsOverlay() {
+    const panel = new Panel(0, 0, 400, 500, 'rgba(0, 0, 0, 0.9)');
+    panel.x = (this.engine.width - panel.width) / 2;
+    panel.y = (this.engine.height - panel.height) / 2;
+    
+    const titleLabel = new Label(0, panel.y + 30, 'STATISTICS', 32, '#ffffff');
+    titleLabel.textAlign = 'center';
+    titleLabel.x = this.engine.width / 2;
+    
+    const stats = window.statistics.getGlobalStatistics();
+    
+    const statsLabels = [
+      new Label(panel.x + 20, panel.y + 80, `Total Games: ${stats.totalGamesPlayed}`, 16, '#ffffff'),
+      new Label(panel.x + 20, panel.y + 110, `Total Time: ${window.statistics.formatTime(stats.totalTimePlayed)}`, 16, '#ffffff'),
+      new Label(panel.x + 20, panel.y + 140, `Total Wins: ${stats.totalWins}`, 16, '#27ae60'),
+      new Label(panel.x + 20, panel.y + 170, `Total Losses: ${stats.totalLosses}`, 16, '#e74c3c'),
+      new Label(panel.x + 20, panel.y + 200, `Win Rate: ${stats.winRate.toFixed(1)}%`, 16, '#f39c12'),
+      new Label(panel.x + 20, panel.y + 230, `Achievements: ${stats.achievementsUnlocked}`, 16, '#9b59b6'),
+      new Label(panel.x + 20, panel.y + 260, `Longest Streak: ${stats.longestWinStreak}`, 16, '#3498db')
+    ];
+    
+    const closeBtn = new Button(
+      panel.x + 20,
+      panel.y + panel.height - 60,
+      panel.width - 40,
+      40,
+      'Close',
+      () => {
+        this.removeUI(panel);
+        this.removeUI(titleLabel);
+        statsLabels.forEach(label => this.removeUI(label));
+        this.removeUI(closeBtn);
+      }
+    );
+    
+    this.addUI(panel);
+    this.addUI(titleLabel);
+    statsLabels.forEach(label => this.addUI(label));
+    this.addUI(closeBtn);
   }
 
   showCredits() {
