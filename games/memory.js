@@ -236,6 +236,15 @@ export class MemoryGame extends Scene {
     const score = Math.max(0, 1000 - this.moves * 10 - Math.floor(this.timer));
     window.save.setHighScore('memory', score);
     window.save.addGamePlayed('memory');
+    window.statistics.trackGamePlayed('memory');
+    window.statistics.trackScore('memory', score);
+    window.achievements.trackScore('memory', score);
+    window.achievements.trackGamePlayed('memory');
+    
+    // Track perfect game achievement
+    if (this.moves === this.cards.length / 2) {
+      window.achievements.trackGameEvent('memory', 'memory_perfect');
+    }
   }
 
   togglePause() {

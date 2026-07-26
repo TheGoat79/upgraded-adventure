@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mini Arcade</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <div id="game-container">
     <canvas id="game-canvas"></canvas>
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-text">Loading...</div>
+      <div class="loading-bar">
+        <div class="loading-progress" id="loading-progress"></div>
+      </div>
+    </div>
   </div>
   <script type="module" src="js/main.js"></script>
 </body>

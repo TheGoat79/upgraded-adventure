@@ -5,6 +5,8 @@ import { AssetManager } from '../engine/assets.js';
 import { SaveManager } from '../engine/save.js';
 import { CollisionUtils } from '../engine/collision.js';
 import { ParticleSystem } from '../engine/particles.js';
+import { AchievementManager } from '../engine/achievements.js';
+import { StatisticsManager } from '../engine/statistics.js';
 import { ArcadeMenu } from '../games/arcade-menu.js';
 import { SnakeGame } from '../games/snake.js';
 import { PongGame } from '../games/pong.js';
@@ -36,6 +38,8 @@ const audio = new AudioManager();
 const assets = new AssetManager();
 const save = new SaveManager();
 const particles = new ParticleSystem();
+const achievements = new AchievementManager(save);
+const statistics = new StatisticsManager(save);
 
 window.engine = engine;
 window.input = input;
@@ -43,6 +47,12 @@ window.audio = audio;
 window.assets = assets;
 window.save = save;
 window.particles = particles;
+window.achievements = achievements;
+window.statistics = statistics;
+
+// Initialize systems
+achievements.init();
+statistics.init();
 
 const arcadeMenu = new ArcadeMenu(engine);
 const snakeGame = new SnakeGame(engine);
@@ -78,6 +88,49 @@ canvas.addEventListener('mousemove', (e) => {
     input.mouse.y = y;
   }
 });
+
+// Loading screen
+const loadingScreen = document.getElementById('loading-screen');
+const loadingProgress = document.getElementById('loading-progress');
+
+function showLoadingScreen() {
+  if (loadingScreen) {
+    loadingScreen.classList.remove('hidden');
+  }
+}
+
+function hideLoadingScreen() {
+  if (loadingScreen) {
+    loadingScreen.classList.add('hidden');
+  }
+}
+
+function updateLoadingProgress(progress) {
+  if (loadingProgress) {
+    loadingProgress.style.width = `${progress * 100}%`;
+  }
+}
+
+// Setup asset loading
+assets.onProgress((progress, loaded, total) => {
+  updateLoadingProgress(progress);
+});
+
+assets.onComplete(() => {
+  hideLoadingScreen();
+});
+
+// Start with loading screen
+showLoadingScreen();
+updateLoadingProgress(0);
+
+// Simulate initial loading (since we don't have actual assets to load)
+setTimeout(() => {
+  updateLoadingProgress(1);
+  setTimeout(() => {
+    hideLoadingScreen();
+  }, 300);
+}, 500);
 
 function toggleFullscreen() {
   if (!document.fullscreenElement) {

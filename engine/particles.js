@@ -35,6 +35,7 @@ export class Particle {
 export class ParticleSystem {
   constructor() {
     this.particles = [];
+    this.maxParticles = 500; // Limit max particles for performance
   }
 
   emit(x, y, count, options = {}) {
@@ -50,7 +51,15 @@ export class ParticleSystem {
       spread = Math.PI * 2
     } = options;
 
-    for (let i = 0; i < count; i++) {
+    // Don't emit if we're at max capacity
+    if (this.particles.length >= this.maxParticles) {
+      return;
+    }
+
+    // Adjust count to not exceed max
+    const adjustedCount = Math.min(count, this.maxParticles - this.particles.length);
+
+    for (let i = 0; i < adjustedCount; i++) {
       const color = colors[Math.floor(Math.random() * colors.length)];
       const speed = minSpeed + Math.random() * (maxSpeed - minSpeed);
       const life = minLife + Math.random() * (maxLife - minLife);
@@ -71,12 +80,22 @@ export class ParticleSystem {
   }
 
   update(dt) {
-    this.particles.forEach(p => p.update(dt));
-    this.particles = this.particles.filter(p => !p.isDead());
+    const aliveParticles = [];
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+      p.update(dt);
+      if (!p.isDead()) {
+        aliveParticles.push(p);
+      }
+    }
+    this.particles = aliveParticles;
   }
 
   render(ctx) {
-    this.particles.forEach(p => p.render(ctx));
+    const len = this.particles.length;
+    for (let i = 0; i < len; i++) {
+      this.particles[i].render(ctx);
+    }
   }
 
   clear() {
@@ -85,5 +104,13 @@ export class ParticleSystem {
 
   getCount() {
     return this.particles.length;
+  }
+
+  setMaxParticles(max) {
+    this.maxParticles = max;
+    // Trim if current count exceeds new max
+    if (this.particles.length > max) {
+      this.particles = this.particles.slice(0, max);
+    }
   }
 }

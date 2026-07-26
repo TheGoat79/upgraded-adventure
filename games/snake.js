@@ -198,6 +198,10 @@ export class SnakeGame extends Scene {
     }
     
     window.save.addGamePlayed('snake');
+    window.statistics.trackGamePlayed('snake');
+    window.statistics.trackScore('snake', this.score);
+    window.achievements.trackScore('snake', this.score);
+    window.achievements.trackGamePlayed('snake');
   }
 
   togglePause() {
