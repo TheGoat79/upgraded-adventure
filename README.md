@@ -493,6 +493,108 @@ The game will be available at `http://localhost:8000`
 
 The project is already configured for GitHub Pages deployment. Simply push to the `main` branch to deploy.
 
+## Startup Flow
+
+The application follows this initialization sequence:
+
+1. **DOM Ready**: Waits for DOM to be fully loaded
+2. **Error Handlers**: Sets up global error and promise rejection handlers
+3. **Canvas Setup**: Configures canvas with responsive sizing
+4. **Async Initialization**: Begins async initialization with progress tracking
+5. **Engine Creation**: Initializes core engine and subsystems (with error handling)
+6. **System Initialization**: Sets up achievements, statistics, and save systems (with fallbacks)
+7. **Game Creation**: Instantiates all game scenes (with error handling per game)
+8. **Scene Registration**: Registers games with the engine
+9. **Input Setup**: Configures mouse, keyboard, and touch handlers
+10. **Engine Start**: Switches to menu scene and starts game loop
+11. **Loading Screen**: Hides loading screen after successful initialization or shows error
+
+### Error Recovery
+
+The application includes multiple layers of error recovery:
+
+- **Global Error Handlers**: Catch unhandled errors and promise rejections
+- **Per-Game Error Handling**: Individual game initialization failures don't crash the app
+- **Save System Fallbacks**: Corrupted save data falls back to defaults
+- **Asset Timeouts**: Failed asset loads don't block startup
+- **Loading Screen Timeout**: Loading screen will auto-hide after 3 seconds on error
+
+## Troubleshooting
+
+### Loading Screen Stuck
+
+If the loading screen remains visible:
+
+1. **Check Console**: Open browser DevTools (F12) and check for errors
+2. **Debug Mode**: Press `Ctrl+Shift+D` to enable debug mode
+3. **Module Loading**: Ensure all JavaScript files are present and accessible
+4. **Browser Compatibility**: Ensure you're using a modern browser (Chrome, Firefox, Safari, Edge)
+
+### Games Not Launching
+
+If games fail to launch:
+
+1. **Save Data Corrupt**: Clear localStorage and reload
+   ```javascript
+   localStorage.clear();
+   location.reload();
+   ```
+2. **Missing Dependencies**: Check that all engine files are present
+3. **Initialization Errors**: Check console for specific error messages
+
+### Performance Issues
+
+If the game runs slowly:
+
+1. **Debug Mode**: Enable debug mode to check FPS and performance metrics
+2. **Particle Count**: The engine limits particles to 500 for performance
+3. **Browser Extensions**: Some extensions can interfere with canvas rendering
+4. **Hardware Acceleration**: Ensure hardware acceleration is enabled in browser
+
+### Save System Issues
+
+If save data isn't persisting:
+
+1. **LocalStorage Disabled**: Check that localStorage is enabled in your browser
+2. **Private Mode**: Some browsers disable localStorage in private/incognito mode
+3. **Storage Quota**: Clear browser cache if storage quota is exceeded
+4. **Data Migration**: The save system automatically migrates old data formats
+
+### Audio Not Playing
+
+If audio doesn't work:
+
+1. **User Interaction**: Browsers require user interaction before playing audio
+2. **Volume Settings**: Check that volume isn't muted in settings
+3. **Browser Policy**: Some browsers block autoplay - interact with the page first
+
+### Debug Mode
+
+Enable debug mode by pressing `Ctrl+Shift+D` to see:
+
+- FPS counter
+- Current scene name
+- Asset loading status
+- Memory usage (when available)
+- Performance metrics
+- Watch variables
+
+Debug mode can also be enabled programmatically:
+
+```javascript
+window.engine.toggleDebug();
+```
+
+### Common Error Messages
+
+**"Canvas element not found"**: The HTML structure is corrupted or canvas ID changed
+
+**"Failed to load save data"**: LocalStorage is corrupted or disabled (will use defaults)
+
+**"Asset loading timeout"**: An asset failed to load within 10 seconds (will continue with missing asset)
+
+**"Game initialization failed"**: A game failed to initialize properly (will show error state)
+
 ## Debug Mode
 
 Enable debug mode by pressing the configured debug key (can be set in config) or through code:

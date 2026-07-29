@@ -135,16 +135,17 @@ export class DebugManager {
     this.profiler.customMetrics.clear();
   }
 
-  renderDebugInfo(ctx, width, height, fps) {
+  renderDebugInfo(ctx, width, height, fps, currentScene, assetsInfo) {
     if (!this.enabled) return;
 
     let y = 10;
     const lineHeight = 20;
     const padding = 10;
+    const panelWidth = 300;
 
     // Draw debug panel
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    ctx.fillRect(padding, padding, 250, Math.max(100, this.watchList.size * lineHeight + 50));
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+    ctx.fillRect(padding, padding, panelWidth, Math.max(150, this.watchList.size * lineHeight + 80));
 
     ctx.fillStyle = '#00ff00';
     ctx.font = '14px monospace';
@@ -154,6 +155,12 @@ export class DebugManager {
     // FPS
     if (this.showFPS) {
       ctx.fillText(`FPS: ${fps.toFixed(1)}`, padding * 2, y);
+      y += lineHeight;
+    }
+
+    // Current scene
+    if (currentScene) {
+      ctx.fillText(`Scene: ${currentScene.constructor.name}`, padding * 2, y);
       y += lineHeight;
     }
 
@@ -170,6 +177,26 @@ export class DebugManager {
     y += lineHeight;
     ctx.fillText(`Show Hitboxes: ${this.showHitboxes}`, padding * 2, y);
     y += lineHeight;
+
+    // Assets info
+    if (assetsInfo) {
+      ctx.fillText(`Assets: ${assetsInfo.totalImages} loaded`, padding * 2, y);
+      y += lineHeight;
+      if (assetsInfo.failedAssets > 0) {
+        ctx.fillStyle = '#ff0000';
+        ctx.fillText(`Failed: ${assetsInfo.failedAssets}`, padding * 2, y);
+        ctx.fillStyle = '#00ff00';
+        y += lineHeight;
+      }
+    }
+
+    // Memory info (if available)
+    if (performance.memory) {
+      const usedMB = (performance.memory.usedJSHeapSize / 1048576).toFixed(2);
+      const totalMB = (performance.memory.totalJSHeapSize / 1048576).toFixed(2);
+      ctx.fillText(`Memory: ${usedMB}MB / ${totalMB}MB`, padding * 2, y);
+      y += lineHeight;
+    }
 
     // Watch list
     if (this.watchList.size > 0) {

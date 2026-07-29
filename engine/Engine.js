@@ -108,7 +108,8 @@ export class Engine {
     
     // Render debug info
     if (this.debug.isEnabled()) {
-      this.debug.renderDebugInfo(this.ctx, this.width, this.height, this.time.getFPS());
+      const assetsInfo = window.assets ? window.assets.getStats() : null;
+      this.debug.renderDebugInfo(this.ctx, this.width, this.height, this.time.getFPS(), this.currentScene, assetsInfo);
     }
   }
 

@@ -12,6 +12,9 @@ export class AssetManager {
     this.completionCallbacks = [];
     this.lazyLoadQueue = [];
     this.processingLazyLoad = false;
+    this.timeoutMs = 10000; // 10 second timeout per asset
+    this.startTime = null;
+    this.hasTimeout = false;
   }
 
   loadImage(name, src, options = {}) {
@@ -27,7 +30,29 @@ export class AssetManager {
 
     const promise = new Promise((resolve, reject) => {
       const img = new Image();
+      let timeoutId = null;
+      
+      // Set timeout
+      if (this.timeoutMs > 0) {
+        timeoutId = setTimeout(() => {
+          this.hasTimeout = true;
+          console.warn(`Asset loading timeout: ${name}`);
+          this.failedAssets.set(name, { src, error: 'Loading timeout' });
+          this.loadedCount++;
+          this.updateProgress();
+          
+          if (this.loadedCount >= this.toLoad && this.toLoad > 0) {
+            this.loaded = true;
+            this.notifyCompletion();
+          }
+          
+          this.loadingPromises.delete(name);
+          reject(new Error(`Asset loading timeout: ${name}`));
+        }, this.timeoutMs);
+      }
+      
       img.onload = () => {
+        if (timeoutId) clearTimeout(timeoutId);
         this.images.set(name, img);
         this.cache.set(name, img);
         this.loadedCount++;
@@ -42,7 +67,9 @@ export class AssetManager {
         this.loadingPromises.delete(name);
         resolve(img);
       };
+      
       img.onerror = () => {
+        if (timeoutId) clearTimeout(timeoutId);
         this.failedAssets.set(name, { src, error: 'Failed to load image' });
         this.loadedCount++;
         this.updateProgress();
@@ -55,6 +82,7 @@ export class AssetManager {
         this.loadingPromises.delete(name);
         reject(new Error(`Failed to load image: ${name}`));
       };
+      
       img.src = src;
     });
 
@@ -63,6 +91,10 @@ export class AssetManager {
   }
 
   loadImages(imageList) {
+    if (!this.startTime) {
+      this.startTime = Date.now();
+    }
+    
     this.toLoad += imageList.length;
     const promises = imageList.map(({ name, src, options }) => 
       this.loadImage(name, src, options).catch(err => {
@@ -88,6 +120,15 @@ export class AssetManager {
   getProgress() {
     if (this.toLoad === 0) return 1;
     return this.loadedCount / this.toLoad;
+  }
+
+  getElapsedTime() {
+    if (!this.startTime) return 0;
+    return Date.now() - this.startTime;
+  }
+
+  setTimeout(ms) {
+    this.timeoutMs = ms;
   }
 
   onProgress(callback) {
@@ -203,6 +244,8 @@ export class AssetManager {
     this.completionCallbacks = [];
     this.lazyLoadQueue = [];
     this.processingLazyLoad = false;
+    this.startTime = null;
+    this.hasTimeout = false;
   }
 
   getStats() {
@@ -213,7 +256,9 @@ export class AssetManager {
       loadingAssets: this.loadingPromises.size,
       queuedLazyLoads: this.lazyLoadQueue.length,
       progress: this.getProgress(),
-      loaded: this.loaded
+      loaded: this.loaded,
+      elapsedTime: this.getElapsedTime(),
+      hasTimeout: this.hasTimeout
     };
   }
 }

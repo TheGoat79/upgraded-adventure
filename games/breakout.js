@@ -31,47 +31,56 @@ export class BreakoutGame extends Scene {
   }
 
   createUI() {
-    this.scoreLabel = new Label(10, 10, 'Score: 0', 18, '#ffffff');
-    this.livesLabel = new Label(10, 35, 'Lives: 3', 18, '#e74c3c');
-    this.levelLabel = new Label(10, 60, 'Level: 1', 18, '#3498db');
-    
-    this.pauseOverlay = new PauseOverlay(
-      this,
-      () => this.resume(),
-      () => this.restart(),
-      () => this.goToMenu(),
-      () => this.showSettings()
-    );
+    try {
+      this.scoreLabel = new Label(10, 10, 'Score: 0', 18, '#ffffff');
+      this.livesLabel = new Label(10, 35, 'Lives: 3', 18, '#e74c3c');
+      this.levelLabel = new Label(10, 60, 'Level: 1', 18, '#3498db');
+      
+      this.pauseOverlay = new PauseOverlay(
+        this,
+        () => this.resume(),
+        () => this.restart(),
+        () => this.goToMenu(),
+        () => this.showSettings()
+      );
+    } catch (error) {
+      console.error('Breakout game UI creation failed:', error);
+    }
   }
 
   init() {
-    this.paddle = {
-      x: this.engine.width / 2 - this.paddleWidth / 2,
-      y: this.engine.height - 40,
-      width: this.paddleWidth,
-      height: this.paddleHeight
-    };
-    
-    this.ball = {
-      x: this.engine.width / 2,
-      y: this.engine.height - 60,
-      radius: this.ballSize / 2,
-      vx: this.ballSpeed * (Math.random() - 0.5),
-      vy: -this.ballSpeed
-    };
-    
-    this.bricks = [];
-    this.createBricks();
-    
-    this.lives = 3;
-    this.score = 0;
-    this.level = 1;
-    this.gameOver = false;
-    this.paused = false;
-    this.powerUps = [];
-    this.activePowerUp = null;
-    this.powerUpTimer = 0;
-    this.updateUI();
+    try {
+      this.paddle = {
+        x: this.engine.width / 2 - this.paddleWidth / 2,
+        y: this.engine.height - 40,
+        width: this.paddleWidth,
+        height: this.paddleHeight
+      };
+      
+      this.ball = {
+        x: this.engine.width / 2,
+        y: this.engine.height - 60,
+        radius: this.ballSize / 2,
+        vx: this.ballSpeed * (Math.random() - 0.5),
+        vy: -this.ballSpeed
+      };
+      
+      this.bricks = [];
+      this.createBricks();
+      
+      this.lives = 3;
+      this.score = 0;
+      this.level = 1;
+      this.gameOver = false;
+      this.paused = false;
+      this.powerUps = [];
+      this.activePowerUp = null;
+      this.powerUpTimer = 0;
+      this.updateUI();
+    } catch (error) {
+      console.error('Breakout game initialization failed:', error);
+      this.gameOver = true;
+    }
   }
 
   createBricks() {
