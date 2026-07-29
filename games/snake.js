@@ -29,34 +29,43 @@ export class SnakeGame extends Scene {
   }
 
   createUI() {
-    this.scoreLabel = new Label(10, 10, 'Score: 0', 20, '#ffffff');
-    this.highScoreLabel = new Label(10, 35, 'High Score: 0', 16, '#f39c12');
-    
-    this.pauseOverlay = new PauseOverlay(
-      this,
-      () => this.resume(),
-      () => this.restart(),
-      () => this.goToMenu(),
-      () => this.showSettings()
-    );
+    try {
+      this.scoreLabel = new Label(10, 10, 'Score: 0', 20, '#ffffff');
+      this.highScoreLabel = new Label(10, 35, 'High Score: 0', 16, '#f39c12');
+      
+      this.pauseOverlay = new PauseOverlay(
+        this,
+        () => this.resume(),
+        () => this.restart(),
+        () => this.goToMenu(),
+        () => this.showSettings()
+      );
+    } catch (error) {
+      console.error('Snake game UI creation failed:', error);
+    }
   }
 
   init() {
-    this.snake = [
-      { x: 5, y: 10 },
-      { x: 4, y: 10 },
-      { x: 3, y: 10 }
-    ];
-    this.direction = { x: 1, y: 0 };
-    this.nextDirection = { x: 1, y: 0 };
-    this.score = 0;
-    this.speed = this.baseSpeed;
-    this.gameOver = false;
-    this.paused = false;
-    this.moveTimer = 0;
-    this.spawnFood();
-    this.highScore = window.save.getHighScore('snake');
-    this.updateScore();
+    try {
+      this.snake = [
+        { x: 5, y: 10 },
+        { x: 4, y: 10 },
+        { x: 3, y: 10 }
+      ];
+      this.direction = { x: 1, y: 0 };
+      this.nextDirection = { x: 1, y: 0 };
+      this.score = 0;
+      this.speed = this.baseSpeed;
+      this.gameOver = false;
+      this.paused = false;
+      this.moveTimer = 0;
+      this.spawnFood();
+      this.highScore = window.save ? window.save.getHighScore('snake') : 0;
+      this.updateScore();
+    } catch (error) {
+      console.error('Snake game initialization failed:', error);
+      this.gameOver = true;
+    }
   }
 
   spawnFood() {

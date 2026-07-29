@@ -24,49 +24,58 @@ export class PongGame extends Scene {
   }
 
   createUI() {
-    this.scoreLabel = new Label(0, 20, '0 - 0', 32, '#ffffff');
-    this.scoreLabel.textAlign = 'center';
-    this.scoreLabel.x = this.engine.width / 2;
-    
-    this.difficultyLabel = new Label(10, 10, 'Difficulty: Medium', 16, '#f39c12');
-    
-    this.pauseOverlay = new PauseOverlay(
-      this,
-      () => this.resume(),
-      () => this.restart(),
-      () => this.goToMenu(),
-      () => this.showSettings()
-    );
+    try {
+      this.scoreLabel = new Label(0, 20, '0 - 0', 32, '#ffffff');
+      this.scoreLabel.textAlign = 'center';
+      this.scoreLabel.x = this.engine.width / 2;
+      
+      this.difficultyLabel = new Label(10, 10, 'Difficulty: Medium', 16, '#f39c12');
+      
+      this.pauseOverlay = new PauseOverlay(
+        this,
+        () => this.resume(),
+        () => this.restart(),
+        () => this.goToMenu(),
+        () => this.showSettings()
+      );
+    } catch (error) {
+      console.error('Pong game UI creation failed:', error);
+    }
   }
 
   init() {
-    this.playerPaddle = {
-      x: 30,
-      y: this.engine.height / 2 - this.paddleHeight / 2,
-      width: this.paddleWidth,
-      height: this.paddleHeight
-    };
-    
-    this.aiPaddle = {
-      x: this.engine.width - 30 - this.paddleWidth,
-      y: this.engine.height / 2 - this.paddleHeight / 2,
-      width: this.paddleWidth,
-      height: this.paddleHeight
-    };
-    
-    this.ball = {
-      x: this.engine.width / 2,
-      y: this.engine.height / 2,
-      radius: this.ballSize / 2,
-      vx: this.ballSpeed * (Math.random() > 0.5 ? 1 : -1),
-      vy: this.ballSpeed * (Math.random() - 0.5)
-    };
-    
-    this.playerScore = 0;
-    this.aiScore = 0;
-    this.gameOver = false;
-    this.paused = false;
-    this.updateScore();
+    try {
+      this.playerPaddle = {
+        x: 30,
+        y: this.engine.height / 2 - this.paddleHeight / 2,
+        width: this.paddleWidth,
+        height: this.paddleHeight
+      };
+      
+      this.aiPaddle = {
+        x: this.engine.width - 30 - this.paddleWidth,
+        y: this.engine.height / 2 - this.paddleHeight / 2,
+        width: this.paddleWidth,
+        height: this.paddleHeight
+      };
+      
+      this.ball = {
+        x: this.engine.width / 2,
+        y: this.engine.height / 2,
+        radius: this.ballSize / 2,
+        vx: this.ballSpeed * (Math.random() > 0.5 ? 1 : -1),
+        vy: this.ballSpeed * (Math.random() - 0.5)
+      };
+      
+      this.playerScore = 0;
+      this.aiScore = 0;
+      this.gameOver = false;
+      this.paused = false;
+      this.updateScore();
+    } catch (error) {
+      console.error('Pong game initialization failed:', error);
+      this.gameOver = true;
+    }
   }
 
   update(dt) {

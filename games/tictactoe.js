@@ -22,31 +22,40 @@ export class TicTacToeGame extends Scene {
   }
 
   createUI() {
-    this.statusLabel = new Label(0, 20, "Player X's turn", 24, '#ffffff');
-    this.statusLabel.textAlign = 'center';
-    this.statusLabel.x = this.engine.width / 2;
-    
-    this.modeLabel = new Label(10, 10, 'Mode: PvP', 16, '#f39c12');
-    
-    this.difficultyLabel = new Label(10, 35, 'AI: Medium', 16, '#3498db');
-    this.difficultyLabel.visible = false;
-    
-    this.pauseOverlay = new PauseOverlay(
-      this,
-      () => this.resume(),
-      () => this.restart(),
-      () => this.goToMenu(),
-      () => this.showSettings()
-    );
+    try {
+      this.statusLabel = new Label(0, 20, "Player X's turn", 24, '#ffffff');
+      this.statusLabel.textAlign = 'center';
+      this.statusLabel.x = this.engine.width / 2;
+      
+      this.modeLabel = new Label(10, 10, 'Mode: PvP', 16, '#f39c12');
+      
+      this.difficultyLabel = new Label(10, 35, 'AI: Medium', 16, '#3498db');
+      this.difficultyLabel.visible = false;
+      
+      this.pauseOverlay = new PauseOverlay(
+        this,
+        () => this.resume(),
+        () => this.restart(),
+        () => this.goToMenu(),
+        () => this.showSettings()
+      );
+    } catch (error) {
+      console.error('Tic-Tac-Toe game UI creation failed:', error);
+    }
   }
 
   init() {
-    this.board = Array(this.boardSize).fill(null).map(() => Array(this.boardSize).fill(null));
-    this.currentPlayer = 'X';
-    this.gameOver = false;
-    this.winner = null;
-    this.paused = false;
-    this.updateUI();
+    try {
+      this.board = Array(this.boardSize).fill(null).map(() => Array(this.boardSize).fill(null));
+      this.currentPlayer = 'X';
+      this.gameOver = false;
+      this.winner = null;
+      this.paused = false;
+      this.updateUI();
+    } catch (error) {
+      console.error('Tic-Tac-Toe game initialization failed:', error);
+      this.gameOver = true;
+    }
   }
 
   update(dt) {

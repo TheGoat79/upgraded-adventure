@@ -26,33 +26,42 @@ export class MemoryGame extends Scene {
   }
 
   createUI() {
-    this.movesLabel = new Label(10, 10, 'Moves: 0', 18, '#ffffff');
-    this.timerLabel = new Label(10, 35, 'Time: 0:00', 18, '#ffffff');
-    this.difficultyLabel = new Label(10, 60, 'Difficulty: Medium', 16, '#f39c12');
-    
-    this.pauseOverlay = new PauseOverlay(
-      this,
-      () => this.resume(),
-      () => this.restart(),
-      () => this.goToMenu(),
-      () => this.showSettings()
-    );
+    try {
+      this.movesLabel = new Label(10, 10, 'Moves: 0', 18, '#ffffff');
+      this.timerLabel = new Label(10, 35, 'Time: 0:00', 18, '#ffffff');
+      this.difficultyLabel = new Label(10, 60, 'Difficulty: Medium', 16, '#f39c12');
+      
+      this.pauseOverlay = new PauseOverlay(
+        this,
+        () => this.resume(),
+        () => this.restart(),
+        () => this.goToMenu(),
+        () => this.showSettings()
+      );
+    } catch (error) {
+      console.error('Memory game UI creation failed:', error);
+    }
   }
 
   init() {
-    this.cards = [];
-    this.flippedCards = [];
-    this.matchedPairs = 0;
-    this.moves = 0;
-    this.timer = 0;
-    this.gameStarted = false;
-    this.gameOver = false;
-    this.paused = false;
-    this.canFlip = true;
-    
-    this.setDifficulty(this.difficulty);
-    this.createBoard();
-    this.updateUI();
+    try {
+      this.cards = [];
+      this.flippedCards = [];
+      this.matchedPairs = 0;
+      this.moves = 0;
+      this.timer = 0;
+      this.gameStarted = false;
+      this.gameOver = false;
+      this.paused = false;
+      this.canFlip = true;
+      
+      this.setDifficulty(this.difficulty);
+      this.createBoard();
+      this.updateUI();
+    } catch (error) {
+      console.error('Memory game initialization failed:', error);
+      this.gameOver = true;
+    }
   }
 
   setDifficulty(difficulty) {

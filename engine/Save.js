@@ -14,6 +14,8 @@ export class SaveManager {
       }
     } catch (e) {
       console.warn('Failed to load save data:', e);
+      // Return default data on any error to prevent startup failure
+      return this.getDefaultData();
     }
     
     return this.getDefaultData();
@@ -94,6 +96,7 @@ export class SaveManager {
       localStorage.setItem(this.storageKey, JSON.stringify(this.data));
     } catch (e) {
       console.warn('Failed to save data:', e);
+      // Don't throw - saving should never crash the application
     }
   }
 
