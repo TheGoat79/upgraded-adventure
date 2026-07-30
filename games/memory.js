@@ -1,5 +1,5 @@
-import { Scene } from '../engine/scene.js';
-import { Button, Panel, Label } from '../engine/ui.js';
+import { Scene } from '../engine/Scene.js';
+import { Button, Panel, Label } from '../engine/UI.js';
 import { PauseOverlay } from '../engine/pause.js';
 import { ParticleSystem } from '../engine/particles.js';
 

@@ -1,5 +1,5 @@
-import { Scene } from '../engine/scene.js';
-import { Button, Panel, Label } from '../engine/ui.js';
+import { Scene } from '../engine/Scene.js';
+import { Button, Panel, Label } from '../engine/UI.js';
 import { ParticleSystem } from '../engine/particles.js';
 
 export class ArcadeMenu extends Scene {
